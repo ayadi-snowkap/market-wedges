@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>How this market works, and where it can be entered — causal map v5</title>
+<style>
+:root{
+  --bg:#FFFAEF;--paper:#FFFFFF;--text:#222222;--ink:#0A2233;--muted:#5C5C5C;--line:#ECECEC;--line2:#D6D6D6;
+  --or:#DF5900;--or7:#B14600;--or1:#FBE0CC;
+  --red:#D34B4B;--red1:#FBE4E3;--amb:#B14600;--amb1:#FDF1DE;--vio:#7A68C4;--vio1:#ECE7F8;
+  --sky:#2F8FB0;--sky1:#E6F1F6;--mint:#2EB28F;--mint1:#E4F7EF;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+main{max-width:1320px;margin:0 auto;padding:30px 18px 70px}
+h1{font-size:clamp(23px,3.1vw,33px);line-height:1.15;letter-spacing:-.02em;color:var(--ink);margin:0 0 8px;max-width:34ch}
+.lede{color:var(--muted);max-width:78ch;margin:0 0 16px}
+h2{font-size:19px;color:var(--ink);letter-spacing:-.01em;margin:34px 0 8px}
+p{max-width:80ch;margin:0 0 10px}
+a{color:var(--or);text-underline-offset:2px}
+
+.prov{background:var(--paper);border:1px solid var(--line2);border-radius:10px;padding:13px 16px;margin:0 0 16px}
+.prov h3{margin:0 0 7px;font-size:14.5px;color:var(--ink)}
+.prov .r{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;align-items:center}
+.prov .r span{display:flex;align-items:center;gap:6px;color:var(--muted)}
+.chip{display:inline-block;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:.04em}
+.chip.A{background:var(--mint1);color:#1C7A60}.chip.B{background:var(--sky1);color:#1F6B85}
+.chip.C{background:var(--amb1);color:var(--amb)}.chip.D{background:var(--red1);color:var(--red)}
+.chip.INT{background:var(--or1);color:var(--or7)}.chip.INF{background:var(--vio1);color:#5B4AA8}
+
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12.5px;color:var(--muted);margin:0 0 10px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px;border:2px solid}
+.legend .ln{display:inline-block;width:22px;height:0;border-top:2px solid;margin-right:6px;vertical-align:3px}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.tools button{font:inherit;font-size:12.5px;background:var(--paper);color:var(--ink);border:1px solid var(--line2);border-radius:999px;padding:6px 12px;cursor:pointer}
+.tools button[aria-pressed="true"]{border-color:var(--or);background:var(--or1)}
+.tools button:focus-visible,.node:focus-visible{outline:2px solid var(--or);outline-offset:2px}
+.mapwrap{background:var(--paper);border:1px solid var(--line);border-radius:12px;overflow-x:auto}
+svg{display:block;min-width:1180px;width:100%;height:auto}
+.node{cursor:pointer}
+.node rect{stroke-width:1.6}
+.node rect.inf{stroke-dasharray:5 4}
+.node text{font-size:12px;fill:var(--text)}
+.node .kind{font-size:9.5px;font-weight:700}
+.node .pv{font-size:9.5px;font-weight:700}
+.dim{opacity:.10}
+.h2{opacity:.86}.h3{opacity:.66}.h4{opacity:.48}
+.edge{fill:none;stroke-width:1.6}
+.edge.hot{stroke-width:2.9}
+.edge.h2{stroke-width:2.2}.edge.h3{stroke-width:1.8}
+.hopgrp{margin-top:9px}
+.hopgrp .hl{font-size:11px;font-weight:700;color:var(--or7);letter-spacing:.03em;margin:8px 0 2px}
+.hopgrp ul{margin:0;padding-left:18px}
+.term{border-bottom:1.5px dotted var(--or);cursor:help;color:var(--ink)}
+.term:hover{background:var(--or1)}
+.glossbox{margin-top:11px;background:var(--sky1);border:1px solid var(--sky);border-radius:8px;padding:10px 12px;font-size:13px}
+.glossbox b{color:var(--ink)}
+.glossbox a{font-size:12.5px;display:inline-block;margin-top:5px}
+.elinks{margin-top:4px}
+.reg{margin:10px 0 0;padding:9px 11px;background:var(--or1);border-radius:8px;font-size:12.5px}
+.reg b{display:block;font-size:11px;letter-spacing:.03em;color:var(--or7);margin-bottom:4px}
+.reg span{display:inline-block;background:var(--paper);border:1px solid var(--or);color:var(--or7);font-weight:700;font-size:11.5px;padding:1px 7px;border-radius:4px;margin:0 5px 0 0}
+.elinks a{font-size:11.5px;margin-right:9px}
+.gl{columns:2;column-gap:22px;font-size:13px}
+@media(max-width:760px){.gl{columns:1}}
+.gl div{break-inside:avoid;margin:0 0 9px;padding-left:9px;border-left:2px solid var(--line)}
+.gl b{color:var(--ink)}
+.mech{font-size:12.3px;color:var(--muted);line-height:1.45;margin:3px 0 7px;padding-left:2px;border-left:2px solid var(--line);padding-left:8px}
+.lagtxt{display:inline-block;background:var(--line);color:var(--muted);font-size:10.5px;font-weight:700;padding:1px 5px;border-radius:3px;margin-left:5px}
+.looptag rect{fill:var(--paper);stroke:var(--red);stroke-width:1.2}
+.looptag text{font-size:10.5px;fill:var(--red);font-weight:700}
+.lag text{font-size:10px;fill:var(--muted);font-weight:600}
+.lag rect{fill:var(--paper);stroke:var(--line2);stroke-width:1}
+.detail{display:grid;grid-template-columns:1.35fr 1fr;gap:16px;margin-top:14px}
+@media(max-width:860px){.detail{grid-template-columns:1fr}}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.card h3{margin:3px 0 8px;color:var(--ink);font-size:17px}
+.card .k{font-size:11.5px;font-weight:700;letter-spacing:.03em}
+.card ul{margin:6px 0 0;padding-left:18px}
+.card li{margin:4px 0;font-size:13.5px}
+.pbox{margin:10px 0 0;padding:10px 12px;border-radius:8px;font-size:13px}
+.pbox.src{background:var(--mint1);border:1px solid var(--mint)}
+.pbox.inf{background:var(--vio1);border:1px solid var(--vio)}
+.pbox.weak{background:var(--red1);border:1px solid var(--red)}
+.pbox b{display:block;font-size:11.5px;letter-spacing:.03em;margin-bottom:3px}
+.pbox a{display:inline-block;margin:3px 8px 0 0;font-size:12.5px}
+table{width:100%;border-collapse:collapse;background:var(--paper);font-size:13px;margin:8px 0 14px}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--or1);color:var(--ink);font-weight:600}
+.tbl{overflow-x:auto}
+footer{margin-top:40px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--line2);padding-top:13px}
+</style>
+</head>
+<body>
+<main>
+<h1>How this market works, and where to enter it</h1>
+<p class="lede">Version 5. Four bands, one system — the fourth band is twelve entry wedges, each wired to the loop it attacks: why the numbers are wrong, why a supplier still cannot answer once, and why the go-to-market does not land. Every node is tagged with where it came from. Select any node for its evidence, its provenance, and what it causes.</p>
+
+<div class="prov">
+<h3>Provenance, on every node</h3>
+<div class="r">
+<span><i class="chip A">A</i> Primary — regulation, filing, own announcement</span>
+<span><i class="chip B">B</i> Analyst, academic, law firm</span>
+<span><i class="chip C">C</i> Independent press</span>
+<span><i class="chip D">D</i> Vendor content, directional only</span>
+<span><i class="chip INT">INT</i> Your internal data</span>
+<span><i class="chip INF">INF</i> My inference — not sourced, judge it yourself</span>
+</div>
+<p style="margin:9px 0 0;font-size:13px;color:var(--muted)"><b>Edges carry provenance too.</b> Select any node and each direct connection states the mechanism — why one causes the other — with its own grade and lag. 46 of 64 edges are my reasoning; 18 are sourced.<br>Nodes with a dashed border are my own reasoning, derived from other nodes. They carry no external authority. Use the filter to remove them and see only what is sourced.</p>
+</div>
+
+<div class="legend">
+  <span><i style="border-color:var(--red);background:var(--red1)"></i>Root cause</span>
+  <span><i style="border-color:var(--amb);background:var(--amb1)"></i>Mechanism</span>
+  <span><i style="border-color:var(--vio);background:var(--vio1)"></i>Symptom</span>
+  <span><i style="border-color:var(--sky);background:var(--sky1)"></i>Wildcard</span>
+  <span><i style="border-color:var(--mint);background:var(--mint1)"></i>Force already in play</span>
+  <span><i style="border-color:var(--or);background:var(--or1)"></i>Possible opening</span>
+  <span><span class="ln" style="border-color:#8B8B8B"></span>Causes</span>
+  <span><span class="ln" style="border-color:var(--red);border-top-width:3px"></span>Feeds a loop</span>
+  <span><span class="ln" style="border-color:var(--mint);border-top-style:dashed"></span>Weakens or breaks</span>
+  <span><span class="ln" style="border-color:var(--sky);border-top-style:dotted"></span>Wildcard pressure</span>
+</div>
+
+<div class="tools" role="group" aria-label="Filters">
+  <button data-loop="A" aria-pressed="false">Loop A · averages trap</button>
+  <button data-loop="B" aria-pressed="false">Loop B · hushing spiral</button>
+  <button data-loop="C" aria-pressed="false">Loop C · labour trap</button>
+  <button data-loop="D" aria-pressed="false">Loop D · duplication trap</button>
+  <button data-loop="E" aria-pressed="false">Loop E · wrong-buyer loop</button>
+  <button data-mode="wedge" aria-pressed="false">Wedges only</button>
+  <button data-mode="sourced" aria-pressed="false">Hide my inferences</button>
+  <button data-mode="hop" aria-pressed="false" id="hopbtn">Showing: full cascade</button>
+  <button data-loop="" aria-pressed="false">Clear</button>
+</div>
+
+<p style="font-size:13px;color:var(--muted);margin:0 0 8px">Scroll sideways on a narrow screen. Lag times appear on the edges of whichever node you select.</p>
+<div class="mapwrap"><svg id="map" viewBox="0 0 1280 2050" role="img" aria-label="Causal map of the reporting market, the supplier network problem, and the go-to-market"></svg></div>
+
+<div class="detail">
+  <div class="card" id="dcard" aria-live="polite">
+    <div class="k" id="dk" style="color:var(--muted)">Nothing selected</div>
+    <h3 id="dt">Select a node</h3>
+    <p id="db" style="margin:0;font-size:14px">Each node shows what it is, where the claim came from, and what it causes or is caused by.</p>
+    <div id="dprov"></div>
+    <div id="glossbox" class="glossbox" style="display:none"></div>
+  </div>
+  <div class="card">
+    <div class="k" style="color:var(--muted)">Connections</div>
+    <h3 id="ct" style="font-size:15px">—</h3>
+    <div id="cin"></div><div id="cout"></div>
+  </div>
+</div>
+
+<h2>The five loops, in words</h2>
+<div class="tbl"><table>
+<tr><th style="width:17%">Loop</th><th>What happens</th><th style="width:26%">Where it breaks</th></tr>
+<tr><td><b>A · averages trap</b><br><span class="chip INF">INF</span> structure</td><td>Averages became the default, so a clean supplier earns no credit, so nobody pays to measure, so averages stay the default. The 6% figure that anchors this is <b>vendor-sourced and unverified</b>.</td><td>The GHG Protocol revision requires disaggregation by data type <span class="chip A">A</span>. Note the correction: the primary-data share metric is a <b>recommendation</b>, not a requirement, and its name is unresolved in the draft.</td></tr>
+<tr><td><b>B · hushing spiral</b><br><span class="chip INF">INF</span> structure</td><td>Wrong numbers raise assurance cost, firms with good data go quiet rather than risk a greenwashing charge, so errors go unchallenged.</td><td>Verification a company can show supplier by supplier.</td></tr>
+<tr><td><b>C · labour trap</b><br><span class="chip C">C</span> inputs</td><td>Setup is human labour, so vendors burn cash, so they consolidate — but acquirers buy datasets, not a fix for labour.</td><td>Sell the labour openly instead of hiding it behind a software multiple.</td></tr>
+<tr><td><b>D · duplication trap</b><br><span class="chip C">C</span><span class="chip D">D</span> inputs</td><td>Each buyer group builds its own network, so the supplier answers once <em>per network</em> and pays for each, so participation stays thin, so no network reaches critical mass, so the next buyer builds its own. This is what killed the bank KYC utilities.</td><td>One record that outputs to every network. Germany is currently paying €15–30k per SME to break the same link by subsidy <span class="chip A">A</span>.</td></tr>
+<tr><td><b>E · wrong-buyer loop</b><br><span class="chip INF">INF</span> — my reading of your finding #10</td><td>Selling to whoever will answer means selling outside the buyer's entry point, so the customer never activates, so there is no case study, so the next sale leans harder on promise rather than proof, so it again goes to whoever will answer.</td><td>Sell at the entry point. In compliance the entry points are dated and public.</td></tr>
+</table></div>
+
+<h2>Convergences, divergences, wildcards</h2>
+<div class="tbl"><table>
+<tr><th style="width:17%">Pattern</th><th>What it is</th><th style="width:15%">Provenance</th></tr>
+<tr><td><b>Convergence I</b></td><td>Industry averages and the absence of a shared ledger arrive at the same place: unreliable numbers.</td><td><span class="chip C">C</span> unverified</td></tr>
+<tr><td><b>Convergence II</b></td><td>Three mandates land in one window — GHG Protocol revision, CBAM downstream, textile DPP. <b>Caution:</b> the GHG Protocol document contains no publication date for the final standard, and the CBAM downstream list is not settled (Commission 180, Council 200, Parliament committee 457, plenary due September 2026).</td><td><span class="chip INF">INF</span> from <span class="chip A">A</span> parts</td></tr>
+<tr><td><b>Divergence I</b></td><td>Omnibus splits two ways: fewer firms obliged to report, but a lawful format for supplier requests.</td><td><span class="chip B">B</span></td></tr>
+<tr><td><b>Divergence II</b></td><td>The Big 4 split upward and downward at once — independence rules push them into assurance while AI and graduate cuts pull them out of the onboarding rung.</td><td><span class="chip C">C</span></td></tr>
+<tr><td><b>Divergence III</b></td><td>The TIC firms sell the outcome we planned to sell, but cannot advise on what they verify. They are simultaneously the nearest competitor and a possible channel.</td><td><span class="chip A">A</span> + <span class="chip INF">INF</span></td></tr>
+<tr><td><b>Wildcards</b></td><td>ISO–GHG Protocol partnership; the German onboarding subsidy; independence rules tightening; AI collapsing report price; consolidation anxiety; Cascale's withdrawal of the consumer-facing Higg MSI.</td><td>mixed</td></tr>
+</table></div>
+
+<h2>Glossary</h2>
+<p class="sub">Every term used on the map. Dotted terms inside a node's description are clickable — the definition appears under the card. Listed here too so it can be read without clicking.</p>
+<div class="gl" id="glossall"></div>
+<footer>Grades: A primary · B analyst, academic, law firm · C independent · D vendor content, directional only · INT your internal data · INF my inference, unsourced. Dashed nodes are inference. Snowkap causal map v4, 25 September 2026.</footer>
+</main>
+
+<script>
+const REG={
+ m1:["1.1"],
+ f1:["1.5","1.6"],
+ wiso:["1.7"],
+ comm:["9.2"],
+ r5:["2.2"],
+ m8:["2.2","8.1"],
+ s6:["2.4"],
+ s7:["2.2"],
+ m9:["2.7"],
+ tic1:["2.2"],
+ tic2:["2.2"],
+ tic3:["2.2"],
+ m10:["3.3"],
+ w5:["3.2"],
+ mk7:["3.3"],
+ lp1:["3.3"],
+ mk8:["3.1"],
+ mk9:["4.1"],
+ o2:["2.2"],
+ o7:["2.7"],
+ W1:["2.2","8.3"],
+ W2:["2.10"],
+ W4:["2.6","3.3"],
+ W5:["5.3"],
+ W6:["8.3"],
+ W10:["7.3"],
+ W11:["8.3"],
+ W12:["2.2"]
+};
+const GLOSS={
+"Scope 3":["Emissions in a company's value chain — everything not from its own operations or purchased energy. Usually 70–90% of a total footprint and the hardest to measure.","https://ghgprotocol.org/corporate-value-chain-scope-3-standard","A"],
+"GHG Protocol":["The Greenhouse Gas Protocol — the dominant global carbon accounting standard, run by WRI and WBCSD. Its Scope 3 standard dates from 2011 and is under revision now.","https://ghgprotocol.org/","A"],
+"PACT":["Partnership for Carbon Transparency — WBCSD's methodology AND exchange protocol for primary-data product carbon footprints. 48+ conformant software tools. Catena-X and TfS both run on it.","https://www.wbcsd.org/actions/partnership-for-carbon-transparency-pact/","A"],
+"ISO 14067":["The international standard for quantifying a product's carbon footprint. PACT is built on it.","https://www.iso.org/standard/71206.html","A"],
+"CSRD":["Corporate Sustainability Reporting Directive — the EU law requiring large companies to report sustainability data. Cut back sharply by Omnibus in 2026.","https://finance.ec.europa.eu/capital-markets-union-and-financial-markets/company-reporting-and-auditing/company-reporting/corporate-sustainability-reporting_en","A"],
+"Omnibus":["The EU's 2026 simplification package, Directive (EU) 2026/470. Cut CSRD scope by roughly 90% and capped what reporters may demand from smaller value-chain partners.","https://accountancyeurope.eu/publications/omnibus-explained-key-changes-to-the-csrd-and-csddd/","B"],
+"VSME":["Voluntary Standard for non-listed SMEs — the simplified reporting template. Under Omnibus it becomes the ceiling a CSRD reporter may request from partners under 1,000 employees.","https://www.efrag.org/en/vsme","A"],
+"ESRS":["European Sustainability Reporting Standards — the detailed rules companies report against under CSRD.","https://www.efrag.org/en/sustainability-reporting","A"],
+"CBAM":["Carbon Border Adjustment Mechanism — the EU's carbon border levy. In its definitive phase since 1 January 2026. Charges importers for embedded emissions, and applies a rising markup when actual data is not supplied.","https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism_en","A"],
+"default value":["The emissions figure CBAM applies when an exporter cannot supply verified actual data. Carries a deliberate penalty markup — 10% in 2026, 20% in 2027, 30% from 2028 — so not proving costs money.","https://csddd-navigator.com/blog/cbam-non-eu-exporters-guide","C"],
+"DPP":["Digital Product Passport — an EU requirement for structured product data, with textiles a priority group. Delegated act expected 2027, mandatory around 2028–29.","https://blog.waveplm.com/?p=6800","D"],
+"ESPR":["Ecodesign for Sustainable Products Regulation — the EU law the Digital Product Passport sits inside.","https://commission.europa.eu/energy-climate-change-environment/standards-tools-and-labels/products-labelling-rules-and-requirements/ecodesign-sustainable-products-regulation_en","A"],
+"SBTi":["Science Based Targets initiative — validates corporate emissions targets. Its boundary rules drive what buyers demand of suppliers ahead of regulation.","https://sciencebasedtargets.org/","A"],
+"CDP":["Formerly the Carbon Disclosure Project — runs the questionnaire most large buyers use to collect supplier environmental data.","https://www.cdp.net/","A"],
+"ISSA 5000":["The international standard for sustainability assurance engagements. Applies to periods beginning on or after 15 December 2026.","https://www.big4news.com/p/big-four-climate-reporting-independence","C"],
+"IESBA":["International Ethics Standards Board for Accountants — sets the independence rules that stop a firm advising on what it also assures.","https://www.ethicsboard.org/","A"],
+"TfS":["Together for Sustainability — the chemical industry's buyer consortium, 60+ members with combined turnover over €800bn. Runs a shared supplier audit and PCF programme.","https://www.tfs-initiative.com/","A"],
+"Catena-X":["The automotive industry's data-sharing network. Registration has been part of BMW's procurement since April 2025; Volkswagen says it will require the same in new contracts.","https://catena-x.net/","A"],
+"Cofinity-X":["The commercial operator of Catena-X — the marketplace suppliers actually join.","https://www.cofinity-x.com/","A"],
+"TISAX":["Trusted Information Security Assessment Exchange — the automotive security assessment built by the VDA with Audi, Daimler, Mercedes and VW. One assessment, shared with every OEM. The clearest working example of answer-once.","https://www.nri-secure.com/blog/what-is-tisax","C"],
+"ENX":["The association that governs TISAX and operates the portal through which assessment results are shared.","https://enx.com/en-US/TISAX/","A"],
+"VDA":["Verband der Automobilindustrie — the German automotive industry association that built TISAX.","https://www.vda.de/en","A"],
+"Higg FEM":["Facility Environmental Module — the apparel industry's factory-level sustainability assessment. Facility level, not product level, which is why a product-data gap remains in textiles.","https://cascale.org/tools-programs/higg-index-tools/facility-tools/","A"],
+"Cascale":["The industry body behind the Higg Index, formerly the Sustainable Apparel Coalition.","https://cascale.org/","A"],
+"Worldly":["The exclusive platform through which Higg FEM data is collected. Used by 40,000+ companies.","https://worldly.io/","A"],
+"PCF":["Product Carbon Footprint — emissions attributed to one product rather than a whole company. The unit buyer networks actually exchange.","https://www.carbon-transparency.org/pact-methodology","A"],
+"LCA":["Life Cycle Assessment — the full environmental analysis of a product from raw material to disposal. A PCF is the carbon slice of one.","https://www.iso.org/standard/38498.html","A"],
+"primary data":["Emissions data measured at the actual supplier or site, as opposed to an industry average or a spend-based estimate. What the GHG Protocol revision is designed to push companies toward.","https://ghgprotocol.org/","A"],
+"spend-based":["Estimating emissions by multiplying money spent by an industry-average emission factor. The lowest tier of the data hierarchy, and the default in practice.","https://novisto.com/resources/blogs/getting-a-grip-on-scope-3-data-quality","D"],
+"assurance":["Independent third-party checking of reported figures. Under CSRD the firm that consults generally cannot also assure.","https://www.big4news.com/p/big-four-climate-reporting-independence","C"],
+"verification":["Confirmation by an accredited body that emissions data is accurate. CBAM requires it for actual-value claims; the accreditor, not the client, decides who may do it.","https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism_en","A"],
+"TIC":["Testing, Inspection and Certification — the industry of SGS, Bureau Veritas, TÜV, DNV, Intertek and DEKRA. Already sells to Indian exporters and already does verification.","https://group.bureauveritas.com/","A"],
+"Bureau Veritas":["A major TIC firm, 140+ countries. Publishes an Indian CBAM case study delivering training, methodology, data collection and reporting. Currently an APPLICANT for CBAM verifier accreditation, not yet accredited.","https://group.bureauveritas.com/sustainability/carbon-climate/carbon-markets-eu-voluntary/carbon-border-adjustment-mechanism-servicescbam","A"],
+"SGS":["The largest TIC firm. Runs CBAM compliance services from its India arm.","https://www.sgs.com/en-in/services/cbam-compliance","A"],
+"Assent":["Supply-chain sustainability platform. Launched Request Manager in December 2025 — in its own words the first AI-native solution for how suppliers manage and respond to customer compliance requests. Holds the responder position at the enterprise end.","https://www.businesswire.com/news/home/20251215595090/en","A"],
+"EcoVadis":["Supplier sustainability ratings platform. Buyers ask suppliers to hold a rating; the supplier pays.","https://ecovadis.com/","A"],
+"ISNetworld":["Contractor prequalification network. Contractors pay an annual subscription; hiring clients mandate membership. Acquired Transparency-One in 2023.","https://coverwarden.com/learn/isnetworld-cost","D"],
+"Avetta":["Contractor prequalification network. Roughly $450–900 a year basic, above $1,200 with analytics. Offers supplier Scope 1–2 capture, not product footprints.","https://expiryedge.com/articles/avetta-vs-isnetworld-comparison/","D"],
+"KYC":["Know Your Customer — the bank identity-verification duty. Four shared utilities were built to do it once for many banks; all four failed on fragmentation and non-transferable liability. The clearest failure precedent.","https://www.fenergo.com/blog/kyc-utilities-the-second-coming-learning-from-past-failures/","D"],
+"TRACE":["India's DGFT scheme reimbursing certification costs — up to 95% for micro and small enterprises, 80% for medium, capped at ₹50 lakh per IEC per year.","https://knnindia.co.in/","C"],
+"ACMA":["Automotive Component Manufacturers Association of India. 1,100+ members contributing over 90% of organised-sector turnover.","https://www.acma.in/","A"],
+"CHEMEXCIL":["India's Basic Chemicals, Cosmetics and Dyes Export Promotion Council. ~4,000 members.","https://chemexcil.in/","A"],
+"AEPC":["Apparel Export Promotion Council of India.","https://www.aepcindia.aepcservices.in/","B"],
+"MSME":["Micro, Small and Medium Enterprise — the Indian size classification that determines subsidy eligibility and, in practice, ability to pay.","https://msme.gov.in/","A"],
+"lakh":["Indian numbering unit: 100,000. ₹15 lakh is ₹1.5 million, roughly €15,000.","","INF"],
+"category entry point":["The situation or trigger that makes a buyer start looking. Romaniuk's framing: they would exist even if your brand did not. In compliance, unusually, they are dated and published.","https://basisglobal.co/intelligence-hub/b2b-category-entry-points/","C"],
+"95:5":["Ehrenberg-Bass finding that roughly 95% of B2B buyers are out-of-market at any moment and about 5% are in-market — while 96% of B2B marketers expect campaign effects within two weeks.","https://business.linkedin.com/marketing-solutions/b2b-institute/b2b-research/trends/95-5-rule","B"],
+"nonconsumption":["Christensen's term for demand that does not exist because no suitable offering does. The target of a new-market foothold — you compete with nothing, not with a rival.","https://www.christenseninstitute.org/blog/disruptive-innovation-and-customer-centricity-friends-or-foes/","C"],
+"low-end foothold":["Entering beneath incumbents at a price they cannot profitably match, then moving up. One of two foothold shapes in disruption theory — which itself says little about how to win a foothold.","https://sloanreview.mit.edu/article/how-useful-is-the-theory-of-disruptive-innovation/","B"],
+"TRIZ":["A structured invention method. Its business variant has its own contradiction matrix and 40 principles restated for management. Start from the ideal final result, ask why it cannot be reached — that produces the contradiction.","https://the-trizjournal.com/40-inventive-business-principles-examples/","B"],
+"greenhushing":["Deliberately not publishing environmental data to avoid a greenwashing challenge. Suppresses the data that would otherwise correct errors.","https://europeanbusinessmagazine.com/carbon-accounting-software-problem/","C"],
+"fat tail":["Here, the finding that a small share of suppliers carries most of a buyer's emissions — Schneider's 1,000 suppliers are 65% of group CO₂; 10% of textile facilities exceed 80% of manufacturing emissions.","https://perspectives.se.com/blog-stream/french-frontiers-taking-the-lead-in-decarbonizing-value-chains","A"],
+"Tier 2":["A supplier that sells to another supplier rather than directly to the brand or OEM. Usually smaller, less resourced, and outside every existing network.","","INF"]
+};
+const GKEYS=Object.keys(GLOSS).sort((a,b)=>b.length-a.length);
+const GRE=new RegExp("("+GKEYS.map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|")+")","g");
+function mark(t){
+  const e=String(t||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  return e.replace(GRE,m=>`<span class="term" data-t="${m}">${m}</span>`);
+}
+function srcLinks(keys){
+  return (keys||[]).map(k=>{const x=S[k];return x&&x[1]?`<a href="${x[1]}" target="_blank" rel="noopener">${x[0]}</a>`:""}).filter(Boolean).join("");
+}
+function showGloss(t){
+  const g=GLOSS[t];if(!g)return;
+  const box=document.getElementById("glossbox");
+  box.innerHTML=`<b>${t}</b> <span class="chip ${g[2]}">${g[2]}</span><div style="margin:4px 0 0">${g[0]}</div>${g[1]?`<a href="${g[1]}" target="_blank" rel="noopener">Source</a>`:""}`;
+  box.style.display="";
+}
+document.addEventListener("click",e=>{if(e.target.classList&&e.target.classList.contains("term"))showGloss(e.target.dataset.t)});
+(function(){const el=document.getElementById("glossall");if(!el)return;
+ el.innerHTML=Object.keys(GLOSS).sort((a,b)=>a.toLowerCase().localeCompare(b.toLowerCase())).map(k=>{const g=GLOSS[k];
+ return `<div><b>${k}</b> <span class="chip ${g[2]}">${g[2]}</span><br>${g[0]}${g[1]?` <a href="${g[1]}" target="_blank" rel="noopener">source</a>`:""}</div>`}).join("")})();
+const C={root:["#D34B4B","#FBE4E3","Root cause"],mech:["#B14600","#FDF1DE","Mechanism"],symp:["#7A68C4","#ECE7F8","Symptom"],wild:["#2F8FB0","#E6F1F6","Wildcard"],fix:["#2EB28F","#E4F7EF","In play"],open:["#DF5900","#FBE0CC","Opening"]};
+const PC={A:["#1C7A60","#E4F7EF"],B:["#1F6B85","#E6F1F6"],C:["#B14600","#FDF1DE"],D:["#D34B4B","#FBE4E3"],INT:["#B14600","#FBE0CC"],INF:["#5B4AA8","#ECE7F8"]};
+const S={
+ ghg:["GHG Protocol Phase 1 Update (read in full)","https://ghgprotocol.org/sites/default/files/2026-03/S3-Phase1ProgressUpdate-20260331.pdf"],
+ tum:["Klaassen & Stoll, Nature Communications 12:6149","https://tum.de/en/about-tum/news/press-releases/details/37035"],
+ ch:["Carbon Herald on the 2022 CO2 AI by BCG survey","https://carbonherald.com/bcg-only-10-of-companies-measured-their-emissions-comprehensively-in-2022/"],
+ nrm:["Normative on the accuracy gap (2021 survey)","https://normative.io/insight/close-the-accuracy-gap/"],
+ co2:["CO2 AI, the BCG venture that commissioned the survey","https://co2ai.com/"],
+ ncomm:["Klaassen & Stoll, Nature Communications (full text)","https://www.nature.com/articles/s41467-021-26349-x"],
+ ifrs:["IFRS S2 GHG educational material (May 2025)","https://www.ifrs.org/content/dam/ifrs/supporting-implementation/ifrs-s2/ghg-ifrs-s2-educational-material.pdf"],
+ ifrs2:["IFRS on the ISSB standards and the Scope 3 measurement framework","https://www.ifrs.org/sustainability/knowledge-hub/introduction-to-issb-and-ifrs-sustainability-disclosure-standards/"],
+ espr:["European Commission ESPR Working Plan 2025-2030","https://green-forum.ec.europa.eu/news/2025-2030-working-plan-2025-07-11_ro"],
+ dppt:["ESPR delegated act status, citing COM(2025) 187","https://dpp-tool.com/en/blog/espr-delegated-acts/"],
+ terra:["Terrascope on why companies collect primary data","https://www.terrascope.com/scope-3-supplier-engagement"],
+ act:["ACT Scope 3 supplier guide, citing the revision timeline","https://a.storyblok.com/f/311864/x/cecb692695/scope-3-supplier-guide.pdf"],
+ ebm:["European Business Magazine, citing BCG","https://europeanbusinessmagazine.com/carbon-accounting-software-problem/"],
+ nov:["Novisto (vendor)","https://novisto.com/resources/blogs/getting-a-grip-on-scope-3-data-quality"],
+ pact:["WBCSD PACT","https://www.wbcsd.org/actions/partnership-for-carbon-transparency-pact/"],
+ cx:["Catena-X PCF","https://catena-x.net/use-case-cluster/product-carbon-footprint/"],
+ cxa:["Catena-X Data Space Accelerator","https://catena-x.net/news/e23-million-data-space-accelerator-launched-to-fast-track-sme-integration-within-the-catena-x-ecosystem/"],
+ mhp:["MHP (Porsche) on five years of Catena-X","https://www.mhp.com/en/insights/newsroom/news-detail/view/five-years-of-catena-x-an-industrial-revolution-or-a-well-intentioned-data-initiative"],
+ bmw:["BMW Group on Catena-X procurement","https://www.bmwgroup.com/en/news/general/2025/catena-x-connects-digital-supply-chains.html"],
+ eprs:["European Parliament Research Service on CBAM extension","https://eprs.europarl.europa.eu/contents/publications/EPRS/2026/09/EPRS_ATA(2026)791461.html"],
+ cbam:["CBAM default-value markup schedule","https://csddd-navigator.com/blog/cbam-non-eu-exporters-guide"],
+ tfs:["Together for Sustainability","https://www.tfs-initiative.com/"],
+ cas:["Cascale Higg Index tools","https://cascale.org/resource-topic/higg-index-tools/"],
+ sch:["Schneider Electric Zero Carbon Project","https://perspectives.se.com/blog-stream/french-frontiers-taking-the-lead-in-decarbonizing-value-chains"],
+ caro:["Caro et al., UCLA Anderson","https://www.anderson.ucla.edu/faculty_pages/felipe.caro/papers/pdf_FC22.pdf"],
+ isn:["ISNetworld cost structure","https://coverwarden.com/learn/isnetworld-cost"],
+ avt:["Avetta and ISN pricing","https://expiryedge.com/articles/avetta-vs-isnetworld-comparison/"],
+ enxp2:["ENX official TISAX Participation Price List","https://enx.com/pricelist.pdf"],
+ val:["Valiido TISAX cost breakdown, 700+ projects","https://valiido.com/insights/overview-of-tisax-certification-costs-an-easy-guide"],
+ kop:["Kopexa TISAX cost calculator, ENX day rates","https://kopexa.com/en/catalog/tisax/kosten-und-ablauf"],
+ enx:["ENX: ten years of TISAX, ISA2027 release","https://portal.enx.com/en-US/news/isa2027/"],
+ enxp:["ENX TISAX portal","https://portal.enx.com/en-us/tisax/"],
+ tis:["NRI Secure on TISAX","https://www.nri-secure.com/blog/what-is-tisax"],
+ fen:["Fenergo on the failed KYC utilities","https://www.fenergo.com/blog/kyc-utilities-the-second-coming-learning-from-past-failures/"],
+ pyr:["The consulting pyramid under AI","https://businessmodelanalyst.com/consulting-pyramid-ai-entry-level-collapse/"],
+ frc:["FRC final report on the sustainability assurance market study","https://www.frc.org.uk/news-and-events/news/2025/02/frc-sets-out-recommendations-for-the-sustainability-assurance-market/"],
+ icaew:["ICAEW on the FRC emerging findings","https://www.icaew.com/insights/viewpoints-on-the-news/2024/oct-2024/sustainability-assurance-market-faces-quality-and-regulatory-challenges"],
+ iaasb:["IAASB on ISSA 5000 adoption and effective dates","https://www.iaasb.org/focus-areas/understanding-international-standard-sustainability-assurance-5000"],
+ iesba:["IESBA and IAASB joint announcement","https://www.ethicsboard.org/news-events/2025-01/iesba-and-iaasb-unveil-new-standards-and-guidance-strengthen-sustainability-reporting-and-assurance"],
+ iesva:["PwC Viewpoint on the IESSA value-chain effective date","https://viewpoint.pwc.com/dt/gx/en/pwc/auditing_in_briefs/ext/external-users/iesba-s-approved-standard.html"],
+ b4n:["Big4News on IESBA and ISSA 5000","https://www.big4news.com/p/big-four-climate-reporting-independence"],
+ acc:["Accountancy Europe on the value-chain cap","https://accountancyeurope.eu/publications/omnibus-explained-key-changes-to-the-csrd-and-csddd/"],
+ ccl:["Commonwealth Climate Law on Omnibus I","https://commonwealthclimatelaw.org/publication/csrd-reporting-post-omnibus-i-what-directors-need-to-know-in-2026/"],
+ verd:["Verdantix Green Quadrant: Sustainability Consulting 2026, read in full","https://www.pwc.com/gx/en/about/assets/verdantix-green-quadrant-sustainability-consulting-2026-pwc.pdf"],
+ grsvc:["Greenly reviews - Capterra, Trustpilot, G2","https://www.capterra.co.uk/software/219931/greenly-climate-dashboard"],
+ trizp:["Mann, TRIZCON2002 - Systematic Win-Win Problem Solving, read in full","https://triz-journal.com/systematic-win-win-problem-solving-business-environment/"],
+ clean:["CleanCarbon.ai supplier management solution and Sonalika case study","https://cleancarbon.ai/cbam-for-indian-suppliers/"],
+ bv:["Bureau Veritas CBAM services and India case study","https://group.bureauveritas.com/sustainability/carbon-climate/carbon-markets-eu-voluntary/carbon-border-adjustment-mechanism-servicescbam"],
+ scs:["SCS Global India CBAM","https://www.scsglobalservices.com/india-south-asia/services/carbon-border-adjustment-mechanism-cbam"],
+ sgs:["SGS India CBAM","https://www.sgs.com/en-in/services/cbam-compliance"],
+ ass:["Assent Request Manager announcement","https://www.businesswire.com/news/home/20251215595090/en"],
+ li:["LinkedIn B2B Institute, 95-5 rule","https://business.linkedin.com/marketing-solutions/b2b-institute/b2b-research/trends/95-5-rule"],
+ eb:["Ehrenberg-Bass / Dawes on the 95-5 rule","https://marketingscience.info/news-and-insights/advertising-effectiveness-and-the-95-5-rule-most-b2b-buyers-are-not-in-the-market-right-now"],
+ cep:["Romaniuk on category entry points","https://basisglobal.co/intelligence-hub/b2b-category-entry-points/"],
+ g2:["Persefoni reviews via AWS Marketplace","https://aws.amazon.com/marketplace/reviews/reviews-list/prodview-xjkwazkrg2b62"],
+ gaia:["Gaia on Persefoni setup burden","https://gaiacompany.io/best-persefoni-alternatives/"],
+ cs:["CarbonSettle free CBAM quarter","https://carbonsettle.com/cbam-steel-exporters-india"],
+ cool:["Coolset on competitor pricing","https://www.coolset.com/academy/best-greenly-alternatives"],
+ grn:["Greenly comparison page","https://greenly.earth/en-us/compare/greenly-vs-watershed"],
+ triz:["40 Inventive Principles for Business","https://the-trizjournal.com/40-inventive-business-principles-examples/"],
+ norm:["Normative merger announcement","https://normative.io/insight/normative-greenly-merger/"],
+ cts:["Clean the Sky on Normative accounts","https://www.cleanthesky.com/innovation/climate-data-company"],
+ int:["Your internal data",""]
+};
+// [id, type, x, y, lines, body, provenance, sourceKeys, derivedFrom]
+const N=[
+ // BAND 1
+ ["r1","root",130,120,["Scope 3 permits","industry averages"],"The standard has permitted average and spend-based estimates since 2011 where supplier data is missing. Read at source: the hierarchy always ranked supplier-specific data highest.","A",["ghg"],[]],
+ ["m1","mech",375,120,["Averages became","the default"],"COULD NOT BE VERIFIED AT SOURCE. Searched for the 6% supplier-specific figure attributed to SBTi and could not find it in any SBTi or CDP publication. It appears only in vendor blogs. TREAT AS UNSOURCED until found. What IS corroborated: companies typically start with spend-based or industry-average data, and this is explicitly supported by the GHG Protocol — so the direction holds even though the number does not.","D",["nov","terra"],[]],
+ ["m2","mech",620,80,["Clean suppliers","get no credit"],"If a low-carbon supplier receives the same sector average as a dirty one, being clean earns nothing in the buyer's number. This is my reasoning about incentives, not a sourced finding.","INF",[],["m1"]],
+ ["m3","mech",620,195,["No reason to collect","primary data"],"If clean data earns no credit, neither side pays to measure it. My reasoning, and the link the GHG revision and CBAM both press on.","INF",[],["m2"]],
+ ["r2","root",130,320,["No shared ledger of","who owns each tonne"],"Nothing reconciles which company owns a given tonne along a chain; each builds its inventory alone.","C",["ebm"],[]],
+ ["s1","symp",620,320,["Numbers reported as","wrong by 25–40%"],"TRACED TO SOURCE, AND CORRECTED. The figure comes from the CO2 AI by BCG Carbon Emissions Survey. Three corrections: (1) THE NUMBER — the 2022 survey reports 25–30%, the 2021 survey 'up to 40%'. The '30–40%' we have been quoting appears to be a conflation of the two. (2) IT IS SELF-ESTIMATED — respondents ESTIMATE their own error rate. It is executives' guess about their own accuracy, not a measured error against a known truth. (3) CONFLICT OF INTEREST — the survey is commissioned by CO2 AI, a carbon accounting vendor. The claim that carbon accounting is unreliable originates with a company selling carbon accounting. Also from the same survey: only 10% of companies measured Scope 1, 2 and 3 comprehensively in 2022, up from 9%. That figure is more useful to us and more defensible.","C",["ch","nrm","co2","ebm"],[]],
+ ["s1b","symp",375,320,["TUM: 391 Mt","under-reported"],"Full text now read. The 391 Mt splits as 202 Mt omitted upstream and 189 Mt omitted downstream; the paper states that disclosed emissions omit HALF the total. An earlier study it cites found large US companies reported under 25% of upstream Scope 3 in 2013. QUALIFICATIONS UNCHANGED: 56 tech companies, 2019 data, and the finding is OMISSION not calculation error — it does not evidence the BCG number.","A",["tum","ncomm"],[]],
+ ["f1","fix",865,120,["GHG revision: 95% floor,","split by data type"],"Read in full. Revision B1 requires reporting at least 95% of required Scope 3 emissions (87% TWG support). Revision A1 requires disaggregation by data type (80%). Revision A8 restricts corporate-level allocation to homogeneous suppliers (91%).","A",["ghg"],[]],
+ ["f1b","fix",1110,120,["Correction: data share is","a recommendation"],"Three corrections from reading the source. (1) The primary-data-share metric is a RECOMMENDATION, and the draft has not settled its name — the text reads '[specific / primary]'. (2) Verification labels are required only IF a company verifies; a non-verifier may stay silent. (3) The document contains NO publication date for the final standard. Our late-2027 date came from a vendor blog.","A",["ghg"],[]],
+ ["comm","mech",1110,530,["Regulation permits estimates.","Buyers demand actuals."],"NOW CONFIRMED AT IFRS PRIMARY, and it is two-sided. IFRS S2 states Scope 3 measurement is likely to include estimation, and applies a PROPORTIONALITY mechanism — reasonable and supportable information available without undue cost or effort. It does NOT mandate supplier-specific data. BUT the vendor page that raised this omitted half of it: Application Guidance B38–B57 sets a PRIORITISATION hierarchy — direct measurement, value-chain-specific, timely, verified — and REQUIRES disclosure of the measurement approach and THE PROPORTION OF ACTIVITY-BASED AND VERIFIED DATA. That is the same primary-data-share idea as the pending GHG revision, except already in force. NET: regulation prioritises and forces disclosure of primary share but permits estimation; commercial pressure is what actually compels supplier data. NEW DATED DRIVER: AASB S2 accepts spend-based in Year 1 with clear expectation of supplier-specific by Year 2, Group 2 from July 2026.","A",["ifrs","ifrs2","terra"],[]],
+ ["f2","fix",865,255,["PACT: one exchange","format, 48+ tools"],"WBCSD's Partnership for Carbon Transparency defines how to calculate and exchange primary-data product footprints. Catena-X and TfS run on it.","A",["pact","cx"],[]],
+ ["wiso","wild",1110,255,["ISO and GHG Protocol","now co-developing"],"Announced September 2025; ISO's technical community joined the working groups in Q1 2026 to co-develop corporate AND product carbon accounting standards. Found only by reading the source document. Bears directly on where PACT and ISO 14067 end up.","A",["ghg"],[]],
+ ["s2","symp",865,390,["Assurance demand rises —","but the Big 4 do NOT own it"],"VERIFIED AND PARTLY CORRECTED. Demand is real: FTSE 350 companies obtaining sustainability assurance rose 19 percentage points 2019–2022; 84% of the FTSE 100 had some external assurance by 2022. BUT WE MISREAD THE MARKET STRUCTURE. (1) 64 providers overstates choice — 44 of them did only ONE OR TWO engagements, so the effective market is about twenty. (2) WE MISATTRIBUTED THE WARNING: 'may become Big 4 dominated' was a STAKEHOLDER CONCERN in the FRC's Oct 2024 emerging findings, not the FRC's finding. The FRC's FINAL report (Feb 2025) concluded the market is FUNCTIONING WELL, with concerns about quality consistency rather than capture. (3) Only 38% of the FTSE 350 use audit firms for sustainability assurance — 62% do not. PwC leads at just over 14%; ERM Certification and Verification Services is the largest non-audit provider at ~5%, and has never appeared in our competitor set.","A",["frc","icaew","ebm"],[]],
+ ["erm","mech",1110,460,["ERM: the non-audit","assurer we never named"],"Largest non-audit sustainability assurance provider in the FRC data at around 5% of the FTSE 350 market, and inside the top ten alongside the Big 4. A specialist assurer sitting between the Big 4 and the TIC firms — the exact rung this research has been describing as empty. Nothing else is known about them yet: no India presence, pricing or supplier-side offer has been checked. NEW COMPETITOR, UNRESEARCHED.","C",["icaew"],[]],
+ ["s3","symp",620,450,["Greenhushing: good","data goes unpublished"],"Firms with defensible numbers say nothing rather than risk a greenwashing charge over methods they cannot control.","C",["ebm"],[]],
+ ["w1a","wild",130,420,["Omnibus cuts CSRD","scope ~90%"],"Directive (EU) 2026/470: from ~50,000 companies to a few thousand; ~42,000 firms lose the obligation. This node states SCOPE ONLY. It makes no claim about compliance cost — I asserted that nowhere and have no source for it.","B",["ccl"],[]],
+ ["w1b","wild",130,530,["Value-chain cap: VSME","is the lawful ceiling"],"The other half of the same directive, and it points the opposite way: a CSRD reporter may not request more than VSME from partners under 1,000 employees. That gives a supplier one lawful format to answer in. Separated from the scope cut because the two effects run in opposite directions and were previously collapsed into one node.","B",["acc"],[]],
+ ["o1","open",1110,390,["One record, output to","every network"],"My proposed position: a PACT-conformant activity record at the plant that outputs to Catena-X, TfS, Worldly, the CBAM registry and the DPP. Derived from the duplication loop and the existence of a standard format.","INF",[],["f2","m8","s8"]],
+
+ // BAND 2
+ ["r5","root",130,720,["Every buyer group builds","its own network"],"Before TISAX in 2017 each automotive OEM ran its own supplier security audits. Contractors today face ISN, Avetta, Veriforce, Browz and Contractor Check.","C",["tis","isn"],[]],
+ ["ratio","fix",130,840,["10 buyers moved 21,000","suppliers — over 10 years"],"THE COMPULSION RATIO, verified at ENX primary. TISAX surpassed 20,000 locations in Feb 2026 and exceeds 21,000 today, with more than 5,000 active users from MORE THAN TEN VEHICLE MANUFACTURERS. Roughly 2,000 assessed supplier locations per mandating OEM — the strongest quantitative support W4 has. THE UNCOMFORTABLE HALF: first registrations were 28 June 2016, so this took TEN YEARS. Any plan assuming a network forms faster is assuming better than the best-documented case in an adjacent industry. ALSO: ENX is a GOVERNANCE body — it approves audit providers and monitors quality, it does not assess. That is precisely the split we propose: we build the record, an accredited body signs it.","A",["enx","enxp"],[]],
+ ["m8","mech",375,720,["Supplier answers once","PER NETWORK"],"Not once. A subcontractor whose customers mandate three networks keeps three paid memberships and three profiles; one contractor reports five.","D",["avt","isn"],[]],
+ ["s6","symp",620,720,["Supplier pays the","duplication"],"Supplier pays subscription plus setup per country, per network. Avetta $450–900 basic, $1,200+ with analytics; ISNetworld $875+. NOTE: figures are from vendor comparison pages; ISN does not publish a price list.","D",["avt","isn"],[]],
+ ["s7","symp",620,840,["Networks miss","critical mass"],"Five years into Catena-X, MHP reports technology is no longer the obstacle; SMEs lack the organisational and staffing capacity to start.","C",["mhp"],[]],
+ ["w4","wild",375,840,["Germany pays €15–30k","per SME to onboard"],"June 2026: Catena-X and IDSA launched a €23m programme funded by the German economics ministry, paying up to €15,000 for onboarding and €15,000 more for a second use case.","A",["cxa"],[]],
+ ["f3","fix",865,720,["CBAM prices the","absence of proof"],"Definitive phase since 1 Jan 2026. Default values carry a markup of 10% in 2026, 20% in 2027, 30% from 2028 for steel, aluminium and cement.","C",["cbam"],[]],
+ ["f3b","wild",1110,720,["CBAM list NOT settled:","180 / 200 / 457"],"The downstream extension is unsettled. Commission proposed 180 products (Dec 2025); Council agreed 200 (June 2026); Parliament's environment committee reported 457 (July 2026); plenary due September 2026. Any 2028 planning built on one of these numbers is built on sand.","A",["eprs"],[]],
+ ["f4","fix",865,840,["Buyer networks already","compel the answer"],"Catena-X registration has been part of BMW procurement since April 2025. TfS makes PCF data mandatory in supplier assessment. Worldly carries Higg FEM for major brands.","A",["bmw","tfs","cas"],[]],
+ ["tic1","mech",130,960,["TIC already delivers","this, in India"],"Bureau Veritas case study: a leading Indian special steel tubes manufacturer. BV delivered training, emissions methodology, data collection and reporting. Stated outcome — met deadlines, ADDRESSED OVERSEAS CUSTOMER INQUIRIES, STRENGTHENED INTERNAL CAPABILITIES. That is two of our five edges, already sold.","A",["bv"],[]],
+ ["tic2","wild",375,960,["But TIC are only","applicants, not accredited"],"Bureau Veritas describes itself as an applicant for CBAM verifier accreditation. SCS Global Services Europe is currently undergoing the accreditation process. The lane is mid-build.","A",["bv","scs"],[]],
+ ["tic3","symp",620,960,["A verifier cannot advise","what it verifies"],"SGS, BV and TÜV all foreground independence and impartiality. BV simultaneously sells training and methodology, which is the same tension the Big 4 face. My reading of that tension as a structural constraint is inference.","INF",[],["tic1","w5"]],
+ ["m9","mech",865,960,["A few suppliers carry","most emissions"],"Schneider Electric's 1,000 major suppliers carry 65% of group CO₂. Cascale: 10% of facilities account for over 80% of textile manufacturing emissions. Sector level: top ten supplier sectors carry 50–70% of manufacturing upstream Scope 3.","A",["sch","cas","caro"],[]],
+ ["m10","mech",130,1080,["Big 4 shed the","junior rung"],"PERCENTAGES REMOVED after D10. The graduate-cut figures (KPMG 29%, Deloitte 18%, EY 11%) trace to one analysis citing the FT and could not be verified at firm or FT level - do not quote them. WHAT SURVIVES: PwC publicly abandoned its target to add 100,000 employees, citing generative AI, which is a firm statement rather than a leak. And the mechanism does not need the percentages - it rests on a leverage model of a wide junior base billed at a markup meeting automation, corroborated by the ICAEW 'diamond' framing and by Big 4 layoffs concentrating in advisory.","C",["pyr"],[]],
+ ["w5","wild",375,1080,["Independence bites 2026 —","but value chain not until 2028"],"VERIFIED AT PRIMARY SOURCE, and it changes the timing. ISSA 5000 and the IESBA's new Part 5 (IESSA) are both effective for periods beginning on or after 15 December 2026, early application permitted. BUT the IESBA set a LATER date for the provisions covering VALUE CHAIN COMPONENTS — Sections 5405 and 5406 apply only from 1 July 2028. The value chain is exactly where we operate, so the independence squeeze on supplier-side work lands 18 months after the headline date. ALSO: adoption is jurisdictional and uneven — Canada set 15 Dec 2027, Australia issued its own ASSA 5000. '\u2018Effective Dec 2026\u2019 is true of the international standard, not of every market.","A",["iaasb","iesba","iesva"],[]],
+ ["s8","symp",620,1080,["Three mandates land","in one window"],"My synthesis: GHG Protocol revision, CBAM downstream, textile DPP all around 2027–28. CAUTION — the GHG Protocol document gives no final date, and the CBAM list is unsettled. The convergence is a reasonable reading, not an established fact.","INF",[],["f1","f3b"]],
+ ["o2","open",1110,960,["Make the verifier's","job cheap"],"REVISED after reading Mann's primary TRIZ-for-business paper in full, replacing an earlier hand-picked answer. Two independently sourced matches converge. Principle 24 Intermediary — from Mann's own Space-separation list — says put a mediating party between the record's producer and the verifier who must trust it. Principle 2 Taking Away — the same principle Lockheed Skunkworks used to separate R&D rigour from production-line cost — says the same thing from the cost side. ENX already runs exactly this structure at scale (D11).","INF",["trizp"],["tic3","f1"]],
+ ["o7","open",1110,1080,["Head-first: the critical","minority of suppliers"],"CLAIM DOWNGRADED after D7. The 1-2% figure is RETIRED: no public dataset gives a distribution of emissions across a buyer supplier base. What the evidence supports is CONCENTRATION - Schneider 1,000 suppliers out of tens of thousands carrying 65% of group CO2, three comparable company statements, and one sector-level academic finding. The precise share is INTERNAL to each buyer and comes from the first engagement, not from research. This is an input to the PoC, not a research task.","INF",[],["m9"]],
+
+ // BAND 3 ["dpp","wild",1110,1080,["Textile DPP: 2027 act,","but nothing adopted yet"],"TRACED TO THE WORKING PLAN and the date is looser than we claimed. ESPR First Working Plan COM(2025) 187, adopted 16 April 2025, names six priority groups; iron and steel come FIRST (act expected 2026), textiles follow with an indicative 2027 adoption, compliance roughly 18 months later — so late 2028 to 2029. THE WARNING: as of August 2026 NO ESPR delegated act has been adopted at all, and the first ones already SLIPPED from late 2025 to mid-2026, matching the Battery Regulation pattern. Treat every textile DPP date as indicative and slipping. ALREADY IN FORCE, though: the unsold-goods ban on large apparel firms from 19 July 2026, enforced at the border via EU CSW-CERTEX — market access, not just reporting.","A",["espr","dppt"],[]],
+ ["ccar","wild",865,1200,["CleanCarbon: 35 suppliers,","100% submission — solved"],"THE SHARPEST FINDING IN THE PROJECT. CleanCarbon.ai runs a dedicated Supplier Management Solution. Their own case study, an Indian manufacturer: 'Convincing suppliers to share Scope 1, 2, and 3 emissions data was challenging' — then 'Engaged 35 suppliers successfully, with 100% data submission.' A second client reports compliance costs cut 35%. This is the core thesis, solved, in India, at a named scale, by a competitor.","D",["clean"],[]],
+ ["synth","open",375,1980,["One move answers","both B and C"],"SYNTHESIS, found only by doing TRIZ properly. Principle 2, Taking Away, is independently justified for the trust contradiction (o2) AND the labour contradiction (o6) — not reused for convenience, but arrived at from two different case-study analogies that point at the same structure. ONE MOVE: separate the expensive, judgement-heavy function (assembling the record) from the cheap, standardised function (verifying and re-using it), as two different businesses with two different pricing models. ENX has already validated exactly this structure, at scale, for ten years, across 21,000+ locations (D11) — which means this is not a novel idea, it is a documented precedent the analysis independently rediscovered.","INF",["trizp"],[]],
+ ["rb1","symp",1110,1200,["Greenly: real, but a","minority complaint"],"Reverse-benchmark finding, not previously searched despite being the project's original instruction. Majority of Greenly's own reviews are positive on support - same pattern as almost every platform in this set. What is real and specific: a two-year Capterra customer says the team 'lacked either the experience or the bandwidth needed to deliver fully reliable outputs', requiring their own internal verification. A third-year Trustpilot customer had billing failures serious enough to freeze their account. G2's own coded themes independently list Software Bugs and Buggy Software as named, recurring complaints.","C",["grsvc"],[]],
+ ["rb2","symp",865,1080,["PwC: weakest Big 4","customer-success score"],"Reverse-benchmark finding, from an independent analyst source (Verdantix), not G2-style reviews which do not exist for consulting. 69-point questionnaire, 21 client-reference interviews across 15 firms. On 'Customer success', scored from client references: EY 3.0, KPMG 3.0 (best in class); Deloitte 2.0; PwC 1.0 - lowest of the four Big 4 firms that actually participated. PwC simultaneously scores HIGHEST of all 15 firms (2.9) on the capability closest to our own work, data/reporting/disclosure. PwC hosts this report on its own website.","B",["verd"],[]],
+ ["mk1","mech",130,1300,["The responder position","is already claimed"],"Assent announced Request Manager on 15 Dec 2025 — in their own words the industry's first AI-native solution for how suppliers manage and respond to customer compliance and sustainability requests, with proactive declaration sharing. Your working doc says 'the words are unclaimed'. That is now false.","A",["ass"],[]],
+ ["mk2","mech",375,1300,["Everyone differentiates","on size or support"],"Greenly, Coolset, Seedling, Gaia, Normative and Greenplaces all run 'best alternatives' and 'X vs Y' pages. Every axis observed is company size or support depth.","D",["cool","grn"],[]],
+ ["mk3","open",620,1300,["Network-coverage axis","is unoccupied"],"My inference from mk2: nobody differentiates on which buyer network the output serves, and the sector work says that is what decides the purchase. Unverified as a buyer preference — it is my read of an absence.","INF",[],["mk2","f4"]],
+ ["mk8","symp",865,1300,["Setup, not calculation,","is the complaint"],"Recurring in reviews: 'one of the hardest thing to do is to get setup'; data entry described as manual; extensive initial setup and data preparation consuming significant time. Small sample so far — the fifty-review read has not been done.","C",["g2","gaia"],[]],
+ ["o8","open",1110,1300,["Answer before","the question arrives"],"My proposal, from TRIZ contradiction A and Principle 10 (Prior Action). Note the confirmation and the warning in one: Assent's proactive declaration sharing is this principle already in market.","INF",[],["mk1","o1"]],
+ ["mk4","mech",130,1420,["~95% of B2B buyers are","out-of-market"],"Ehrenberg-Bass with the LinkedIn B2B Institute: about 95% of potential buyers are out-of-market at any time, while 96% of B2B marketers expected campaign effects within two weeks.","B",["li","eb"],[]],
+ ["mk5","fix",375,1420,["Compliance entry points","are dated and public"],"My inference: in most categories you cannot predict when a buyer enters the market; here entry is triggered by dated external events — declaration deadlines, questionnaire cycles, network mandates. Applying Romaniuk's category-entry-point concept to this category is my step, not hers.","INF",[],["mk4","f3","f4"]],
+ ["mk6","symp",620,1420,["Site plus SEO reaches","only the in-market 5%"],"My inference from mk4 applied to the 1 Oct site plan. It does not say the site is wrong; it says the site alone addresses a twentieth of the audience.","INF",[],["mk4"]],
+ ["mk7","symp",865,1420,["10 customers bought,","none report"],"Your internal measurement: 10 GHG-module customers, none reporting, 1 former customer did. This is data, not inference — but the explanation below it is mine.","INT",["int"],[]],
+ ["lp1","symp",1110,1420,["No activation,","so no proof"],"My inference: a customer who never activates produces no case study, so the next sale leans on promise rather than evidence — which is how you end up selling to whoever will answer. This closes Loop E.","INF",[],["mk7"]],
+ ["mk9","wild",130,1540,["Free full reports","already exist"],"CarbonSettle offers a done-for-you CBAM quarter free, claimable to 30 September 2026. Vendor content, but it is their own offer page.","D",["cs"],[]],
+ ["ratio2","fix",865,600,["The network charges €405.","The labour charges €5–15k."],"THE PRICING FINDING, from ENX's published tariff. Assessment Based Charges: €405 net ONE-TIME per location per scope, explicitly NO recurring fee during validity. Alternative flat model €5,000/yr for unlimited locations, by arrangement only, 20+ locations. AROUND IT: assessment and preparation run €5,000–15,000 for an SMB and €15,000+ for a large firm; audit days €1,200–1,500; preparation from a few thousand euros to six figures. THE LABOUR IS 12x TO 37x THE NETWORK FEE. Recertification every three years costs 60–70% of initial, so the recurring revenue sits in the labour too. In the best-documented answer-once network in existence, the money is not in the network — it is in getting ready for it. This inverts the build-the-network instinct. NOTE: one vendor guide claims a €1,000–3,000 annual label fee; ENX's own price list contradicts it.","A",["enxp2","val","kop"],[]],
+ ["mk10","mech",375,1540,["Platforms must claim","automation"],"My inference from the labour economics: a platform that admits the work is manual damages its software multiple. It follows from the burn figures rather than from any statement they make.","INF",[],["mk8","mk11"]],
+ ["mk11","open",620,1540,["'We do the labour' is","a sentence they can't write"],"REVISED: earlier drafted as Principle 22 (Blessing in Disguise), picked by feel with no sourced analogy. Properly matched now to Lockheed Skunkworks' Principle 2, Taking Away — the same contradiction shape (rigour needs skilled labour; cost needs cheap delivery), the same solution (separate the two structurally). Platforms cannot say it without damaging the multiple; verifiers should not say it at all.","INF",["trizp"],["mk10","tic3"]],
+ ["mk12","open",865,1540,["Regulatory calendar","as campaign calendar"],"My proposal: convert the dated entry points into an always-on schedule rather than a launch. Follows from mk5 and mk6.","INF",[],["mk5","mk6"]],
+ ["W1","open",130,1650,["W1 · The verifier's","queue"],"BEACHHEAD: Indian CBAM exporters about to book an accredited verifier. FIRST BUYER: the exporter; the verifier introduces. PRICE: below the verification fee (anchors ₹5–15L). WHY NOW: BV is an applicant, not accredited — window in quarters. KILL: a TIC firm launches bundled prep-plus-verification in India.","INF",[],["tic2","tic3"]],
+ ["W2","open",375,1650,["W2 · The second","network"],"BEACHHEAD: suppliers who already answered one network and now face a second — in-market by definition. FIRST BUYER: the supplier. PRICE: less than the second onboarding standalone; contractor analogue $40–95k. KILL: PACT convergence removes the pain before you monetise it — TfS and PACT already publish a joint reconciliation guide.","INF",[],["m8","s6"]],
+ ["W3","open",620,1650,["W3 · The deadline","desk"],"BEACHHEAD: anyone with a declaration or mandate due inside 90 days. FIRST BUYER: whoever holds the deadline — often export or sales, not sustainability. PRICE: small single-deadline fee designed to convert to a standing record. KILL: free full-report offers commoditise it.","INF",[],["mk5","mk12"]],
+ ["W4","open",865,1650,["W4 · One buyer's","tail"],"BEACHHEAD: one EU buyer's Indian supplier list, top 20–50 by emissions (the SPECIFIC share is unknowable from public data — see D7; it comes from the first buyer engagement). FIRST BUYER: the buyer mandates, suppliers pay. PRICE: per supplier, benchmarked to Germany's €15–30k. KILL: no EU buyer mandates a third party they have not used — cannot start cold, needs W1 or W2 first.","INF",[],["m9","f4"]],
+ ["W5","open",1110,1650,["W5 · Council","empanelment"],"BEACHHEAD: one council's membership — ACMA alone reports 1,100+ manufacturers. FIRST BUYER: the council; members pay. WHY NOW: TRACE reimburses up to 95% of certification cost through councils. KILL: a council empanels a TIC firm or Big 4 first — one winner per council. Register 5.3 is still empty.","INF",[],["mk4"]],
+ ["W6","open",130,1770,["W6 · The","nonconsumers"],"BEACHHEAD: Tier 2/3 suppliers who currently answer with a spreadsheet, a default value, or silence. Not a cheaper platform — a first one. PRICE: below the ₹2L retainer floor. WEAKEST PRECEDENT of the twelve; the theory supports the shape, no case proves it here. KILL: cost to serve never falls below what they will pay — register 8.3 unanswered, so unpriceable today.","INF",[],["m3","f3"]],
+ ["W7","open",375,1770,["W7 · Bill the buyer,","not the supplier"],"Promoted from speculative. A calculator telling the EU IMPORTER what the default markup costs them per unproven Indian supplier, by name and volume. The importer pays the premium and holds the mandating power. KILL: it embarrasses the suppliers you then need as customers.","INF",[],["m2","f3"]],
+ ["W8","open",620,1770,["W8 · The forwarder","channel"],"Promoted from speculative. Sell through customs brokers and freight forwarders, who touch every CBAM shipment and already hold the relationship and the data. This is Avalara's ERP-embedding move applied to trade. KILL: forwarders have no emissions competence and may refuse the liability.","INF",[],["mk4"]],
+ ["W9","open",865,1770,["W9 · Open the","format"],"Promoted from speculative. Publish the Indian-exporter record schema free and PACT-conformant; charge only for filling it. Makes founding a rival network pointless, which is the KYC failure mode turned into a defence. KILL: hands the format to whoever has more onboarding capacity — today SGS and BV.","INF",[],["r5","mk11"]],
+ ["W10","open",1110,1770,["W10 · The supplier","index"],"Promoted from speculative. A public list of Indian exporters with verified primary data, aimed at EU procurement searching for low-default suppliers. Converts a compliance cost into a sales lead — the only framing that makes an exporter WANT to pay. KILL: cold start — buyers must search it before suppliers pay.","INF",[],["m2"]],
+ ["W11","open",130,1890,["W11 · Buy the verification,","sell the record"],"Promoted from speculative. Pay the accredited verifier's fee as acquisition cost; charge for the standing record. Removes the largest cheque the exporter writes, and the part they trust you least on. KILL: cash-intensive, and unpriceable until register 8.3 is answered.","INF",[],["s6","tic2"]],
+ ["W12","open",375,1890,["W12 · Bring your","own verifier"],"Promoted from speculative. Explicit verifier-neutrality as the product — we work with whichever accredited body your buyer names. Anti-lock-in in a category where buyers screen for dependency, and it makes every TIC firm a referrer. KILL: neutrality is a weak story to a buyer who just wants it gone.","INF",[],["tic3","o2"]],
+ ["o6","open",1110,1540,["Sell the labour","openly"],"REVISED, properly sourced now: Principle 2, Taking Away — Lockheed Skunkworks' own solution to R&D-quality-vs-cost, reused directly for the structurally identical contradiction here. Separate onboarding labour into its own priced unit rather than folding it into a low-cost software subscription. Competitors' economics bar them from matching it, which is what makes it hold.","INF",["trizp"],["mk11","w4"]]
+];
+const E=[
+ ["r1","m1","c","","~14 yrs","A permitted fallback that carries no penalty becomes the path of least resistance. The standard ranked it lowest; nothing made using it cost anything.","INF",[]],
+ ["m1","m2","c","","immediate","A sector average is applied to every supplier in that sector, so an individual supplier's actual performance never reaches the buyer's number.","INF",[]],
+ ["m2","m3","c","","1–2 yrs","Neither side recovers the cost of measuring if the result cannot change the figure that gets reported.","INF",[]],
+ ["m3","m1","r","A","cycle: 3–5 yrs","With no primary data being produced, the average remains the only thing available to use. The loop closes.","INF",[]],
+ ["r2","s1","c","","persistent","With nothing reconciling ownership of a tonne along a chain, the same emissions can appear in several inventories or in none.","C",["ebm"]],
+ ["m1","s1","c","","immediate","A sector average cannot distinguish between firms in that sector, so the error is structural rather than careless.","INF",[]],
+ ["s1b","s1","w","","2019 data","PRESSES, DOES NOT EVIDENCE. The TUM paper measures omission by digital-technology firms, not calculation error across industry. It corroborates that reported figures are unreliable; it does not support the 30–40% number.","INF",["tum"]],
+ ["s1","s2","c","","~2 yrs","Regulators respond to unreliable self-reporting by requiring third-party checks on figures previously taken on trust.","C",["ebm"]],
+ ["s2","s3","c","","1–2 yrs","Firms weigh the risk of a greenwashing challenge against the benefit of disclosure, and some choose silence.","C",["ebm"]],
+ ["s3","s1","r","B","cycle: 2–4 yrs","Less data in public means fewer figures get challenged, so errors persist uncorrected.","INF",[]],
+ ["s1","f1","c","","4–5 yrs","The revision's own rationale cites limitations in current reporting practice as the reason for requiring disaggregation.","A",["ghg"]],
+ ["f1","m1","b","","final date unknown","Requiring emissions to be split by data type makes spend-based figures visible as the lowest tier, which is designed to reward primary collection. WEAKENED: the accompanying data-share metric is a recommendation, not a requirement.","A",["ghg"]],
+ ["f2","m3","b","","in force now","A single published exchange format lowers the cost of moving primary data between firms, which removes one reason not to collect it.","INF",["pact"]],
+ ["f1b","f1","w","","now","Three weakenings read at source reduce the force of the revision: a recommended not required metric, verification labels that bind only those who already verify, and no publication date.","A",["ghg"]],
+ ["wiso","f2","w","","2026–2028","ISO and GHG Protocol are co-developing product carbon accounting. Whether that absorbs, aligns with or displaces PACT is unknown — this is flagged uncertainty, not a prediction.","INF",["ghg"]],
+ ["f1","o1","c","","2027–28","If data type must be disclosed, a record built to show its own data type becomes the thing buyers ask for.","INF",[]],
+ ["f2","o1","c","","now","A standard format is what makes one record servable to many networks; without it the position collapses into another proprietary silo.","INF",[]],
+ ["w1a","s3","w","","2026–27","~42,000 firms lose the reporting obligation, so less data enters the public record and fewer numbers face challenge.","B",["ccl"]],
+ ["w1b","o1","w","","from FY2027","The cap defines a lawful maximum request, which gives a supplier one defensible format to answer in rather than an open-ended set of buyer questionnaires.","B",["acc"]],
+ ["r5","m8","c","","persistent","Each buyer group stands up its own portal with its own questionnaire, so compliance work does not transfer between them.","C",["tis","isn"]],
+ ["m8","s6","c","","annual","Every network charges the supplier a subscription and a setup fee, per country, independently of the others.","D",["avt","isn"]],
+ ["s6","s7","c","","2–4 yrs","Cost and effort suppress enrolment, particularly among smaller suppliers, so coverage stays thin.","INF",[]],
+ ["s7","r5","r","D","cycle: 3–5 yrs","A network without coverage cannot serve a new buyer, so that buyer builds its own. The loop closes and the count of networks rises.","INF",["fen"]],
+ ["w4","s7","w","","2026 only","A €23m state subsidy pays SMEs to onboard, which attacks the cost link directly — and is an admission that the link is real.","A",["cxa"]],
+ ["f4","m8","c","","since Apr 2025","A mandate converts a network from optional to a condition of supply, which adds one more compulsory answer rather than replacing the others.","A",["bmw","tfs"]],
+ ["o1","m8","b","","untested","One record that emits every required format would remove the per-network duplication. UNTESTED: no evidence yet that buyers accept a third-party record.","INF",[]],
+ ["f3","m3","b","","bites at import","The default-value markup attaches a rising price to not proving emissions, which for the first time makes measurement cheaper than the alternative.","C",["cbam"]],
+ ["f3","o1","c","","2026–2028","A priced penalty for missing proof creates willingness to pay for the record itself.","INF",[]],
+ ["f4","o1","c","","now","Existing mandated networks define the output formats a record must emit to be useful.","INF",[]],
+ ["f3","s8","c","","Jan 2028","CBAM downstream is one of the three dated mandates in the convergence.","A",["eprs"]],
+ ["f1","s8","c","","date unknown","The GHG revision is the second. ITS DATE IS NOT ESTABLISHED — the source document carries none.","A",["ghg"]],
+ ["s8","o1","c","","2027–28","A single window in which several mandates land is what makes one record serve several obligations at once.","INF",[]],
+ ["f3b","f3","w","","Sept 2026 vote","The product list is unsettled — Commission 180, Council 200, Parliament committee 457 — so the scope of who is affected is not yet knowable.","A",["eprs"]],
+ ["f3b","s8","w","","Sept 2026 vote","The same unsettledness undermines the convergence claim: one of its three legs has no fixed shape.","A",["eprs"]],
+ ["m9","o7","c","","immediate","If a small share of suppliers carries most of the emissions, onboarding that share delivers most of the value for a fraction of the labour.","INF",["sch"]],
+ ["f4","o7","c","","now","The buyer's mandate determines which suppliers are worth onboarding first, because their list is the one being enforced.","INF",[]],
+ ["tic1","tic3","c","","now","Selling training and methodology to a client whose emissions you may later verify creates the same independence tension the Big 4 face.","INF",["bv"]],
+ ["w5","tic3","w","","15 Dec 2026","Tightening ethics standards sharpen the constraint on advising where you assure.","C",["b4n"]],
+ ["tic2","tic1","w","","window: quarters","Not yet being accredited limits what TIC can sign today, which is the only reason the window exists at all.","A",["bv","scs"]],
+ ["tic3","o2","c","","untested","A constraint the incumbent cannot escape is the most defensible ground available — build the record so verification is cheap, which is a claim they cannot make about themselves.","INF",[]],
+ ["f1","o2","c","","2027–28","Verification labels and data-type disaggregation define what a cheaply-verifiable record must contain.","INF",[]],
+ ["m10","o6","c","","2024–2026","As the junior rung empties, the labour-intensive work beneath the Big 4 fee floor goes unserved.","INF",["pyr"]],
+ ["w5","m10","w","","15 Dec 2026","Independence pressure pushes the firms further into assurance and further from the advisory rung.","C",["b4n"]], ["ccar","m8","w","","0 findings prior","Direct evidence the duplication-and-reluctance problem is solvable at supplier-count scale, not merely in theory.","D",["clean"]],
+ ["ccar","mk7","w","","stark comparison","CleanCarbon: 35 of 35 suppliers, 100% submission. Our own working doc: 10 GHG customers, 0 reporting. Same problem, a named competitor's documented result, and our own pipeline has not matched it.","INT",["clean","int"]],
+ ["mk1","o8","c","","Jan 2026","Assent shipping proactive declaration sharing proves the answer-before-asked principle has a market — and that someone reached it first.","A",["ass"]],
+ ["o1","o8","c","","untested","A standing record is the precondition for answering before the question arrives.","INF",[]],
+ ["mk2","mk3","c","","observed 2026","If every competitor differentiates on company size or support depth, the axis of network coverage is left unoccupied.","INF",[]],
+ ["f4","mk3","c","","now","Buyer mandates are what make network coverage a purchase criterion rather than a technical detail.","INF",[]],
+ ["mk4","mk5","c","","structural","If most buyers are out-of-market at any moment, what matters is being present at the trigger that brings them in.","B",["li","eb"]],
+ ["f3","mk5","c","","dated","A declaration deadline is a category entry point with a published date, which is rare and exploitable.","INF",[]],
+ ["f4","mk5","c","","dated","A buyer mandate is an entry point with a named owner — the buyer, not us.","INF",[]],
+ ["mk4","mk6","c","","immediate","A site plus search reaches those already looking, which is the in-market minority.","INF",["li"]],
+ ["mk6","mk7","c","","one sales cycle","WEAKEST LINK ON THE MAP. My proposed explanation for ten non-reporting customers: selling outside the entry point produces buyers without the job. Plausible, unevidenced, and testable only by interview.","INF",["int"]],
+ ["mk7","lp1","c","","2–3 qtrs","A customer who never activates produces no case study, no reference and no proof.","INF",[]],
+ ["lp1","mk6","r","E","cycle: 2–4 qtrs","Without proof the next sale leans on promise, which widens targeting rather than sharpening it. The loop closes.","INF",[]],
+ ["mk8","mk10","c","","structural","If setup is manually intensive and buyers say so publicly, a platform must claim automation to keep its story intact.","INF",["g2"]],
+ ["mk10","mk8","r","C","cycle: 2–4 yrs","LOOP CLOSER, added during validation. If a platform must claim automation to defend its multiple, it under-invests in the manual onboarding labour — so setup stays painful and the complaint persists, which is what forces the automation claim in the first place.","INF",[]],
+ ["mk10","mk11","c","","structural","A claim a competitor is economically barred from making is available ground by definition.","INF",[]],
+ ["tic3","mk11","c","","structural","The verifier is barred by independence from saying it; the platform is barred by valuation. The same sentence is unavailable to both.","INF",[]],
+ ["mk11","o6","c","","untested","Sell the labour openly, as the product rather than the embarrassment.","INF",["triz"]],
+ ["w4","o6","c","","2026","A state paying €15–30k per SME for exactly this labour is third-party evidence that the labour has a price.","INF",["cxa"]],
+ ["mk5","mk12","c","","ongoing","Dated entry points can be laid out as a schedule, which turns a regulatory calendar into a campaign calendar.","INF",[]],
+ ["mk6","mk12","c","","ongoing","If a site alone reaches a twentieth of the audience, the remainder has to be reached at their trigger dates.","INF",[]],
+ ["mk9","mk10","w","","2026","Competitors giving reports away free intensify the pressure to claim the work is automated.","INF",["cs"]],
+ ["s6","m8","r","D","annual","Having paid for one network, the supplier is no better placed for the next, so the duplication repeats.","INF",[]], ["w5","tic2","w","","to 1 Jul 2028","The value-chain carve-out means a verifier's independence constraint on supplier-side work does not bite until July 2028, which lengthens the window W1 depends on rather than shortening it.","A",["iesva"]],
+ ["tic2","W1","c","","window: quarters","TIC firms not yet accredited cannot sign today, which is the only reason a preparation wedge has room.","A",["bv","scs"]],
+ ["W1","tic3","b","","0–2 qtrs","Preparing a record the verifier then signs resolves their independence bind rather than competing with it — they keep the assurance, we keep the labour.","INF",[]],
+ ["W1","o2","c","","0–2 qtrs","The verifier's queue is the concrete first sale of the make-verification-cheap position.","INF",[]],
+ ["m8","W2","c","","annual","Answering once per network is the pain; suppliers facing a second demand have already priced it.","D",["avt"]],
+ ["W2","m8","b","","untested","One record emitting every required format removes the duplication rather than adding a network to it.","INF",[]],
+ ["W2","s6","b","","untested","If duplication ends, the per-network fee stack stops compounding.","INF",[]],
+ ["mk5","W3","c","","dated","Dated entry points are what make a deadline desk targetable at all.","INF",[]],
+ ["W3","mk6","b","","1–2 qtrs","Selling at the trigger date reaches buyers the site alone misses, which attacks the wrong-buyer loop at its source.","INF",[]],
+ ["W3","mk12","c","","ongoing","Each deadline campaign is one entry in the campaign calendar.","INF",[]],
+ ["m9","W4","c","","immediate","A short list of high-emission suppliers is what makes one buyer's tail small enough to serve.","A",["sch"]],
+ ["f4","W4","c","","since Apr 2025","The buyer's existing mandate supplies the compulsion; without it this wedge has none.","A",["bmw"]], ["ratio","W4","c","","10 yrs to maturity","Ten mandating buyers produced 21,000 assessed locations. It says one buyer's tail is the right unit — and that the timeline is a decade, not a year.","A",["enx"]],
+ ["ratio","r5","b","","10 yrs","A governance body that approves assessors rather than competing with them is how TISAX avoided the KYC fragmentation trap.","INF",["enx"]],
+ ["W4","s7","b","","2–4 qtrs","Onboarding a buyer's whole critical tail is the fastest route to the coverage networks lack.","INF",[]],
+ ["W1","W4","c","","2–3 qtrs","W4 cannot start cold — it needs the reference that W1 or W2 produces first. SEQUENCING DEPENDENCY.","INF",[]],
+ ["W5","mk6","b","","2–4 qtrs","Council distribution reaches members who never search, which is the out-of-market majority.","INF",[]],
+ ["mk4","W5","c","","structural","If most buyers are out-of-market, distribution through a body they already belong to beats advertising to them.","B",["li"]],
+ ["m3","W6","c","","persistent","Suppliers with no reason to collect are the nonconsumers this wedge targets.","INF",[]],
+ ["f3","W6","c","","from 2026","The rising default markup is what gives nonconsumption a price for the first time.","C",["cbam"]],
+ ["W6","m3","b","","untested","A first-ever record at a price below the retainer floor converts nonconsumption into consumption.","INF",[]],
+ ["W7","m2","b","","untested","Pricing the penalty to the buyer makes a clean supplier visibly cheaper to buy from, which is the credit the averages regime denies them.","INF",[]],
+ ["f3","W7","c","","from 2026","The default markup is the number the calculator displays; without it there is nothing to show.","C",["cbam"]],
+ ["mk4","W8","c","","structural","Forwarders reach exporters at the shipment, not at the search — which is where out-of-market buyers are.","INF",[]],
+ ["W8","mk6","b","","2–4 qtrs","A channel that touches every shipment reaches buyers before they start looking.","INF",[]],
+ ["r5","W9","c","","persistent","Each buyer building its own network is the condition an open format attacks.","C",["tis"]],
+ ["W9","r5","b","","3–5 yrs","A free conformant schema removes the reason to found a rival network, which is the only durable answer to Loop D.","INF",["fen"]],
+ ["mk11","W9","c","","structural","Giving the format away only works if the money is in the labour — which is the claim competitors cannot make.","INF",[]],
+ ["W10","m2","b","","untested","Listing verified suppliers where buyers search converts proof into orders, which is the credit clean suppliers currently never receive.","INF",[]],
+ ["s6","W11","c","","annual","The verification fee is the largest single cheque; absorbing it is the sharpest possible acquisition lever.","D",["isn"]],
+ ["W11","s6","b","","untested","Moving the fee off the supplier's books removes the cost that suppresses participation.","INF",[]],
+ ["tic3","W12","c","","structural","The verifier's independence bind is exactly what neutrality sells against.","INF",[]],
+ ["W12","tic3","b","","untested","Declaring neutrality turns every accredited body from rival into referrer.","INF",[]], ["comm","f4","c","","now","If the pressure is commercial rather than regulatory, the buyer mandate is the operative force and the regulation is background.","D",["terra"]],
+ ["comm","s8","w","","2027–28","Undercuts the convergence claim: if no framework mandates supplier-specific data, three mandates landing together may not produce the demand we assumed.","D",["terra"]],
+ ["comm","W4","c","","now","A commercially-driven buyer is a buyer who will mandate without waiting for a law — which is exactly what W4 needs.","INF",[]],
+ ["s2","erm","c","","2022 data","Growing assurance demand supports specialist non-audit assurers, not only the Big 4 — ERM holds ~5% of the FTSE 350 market.","C",["icaew"]],
+ ["erm","tic3","w","","structural","A specialist assurer faces the same independence bind as a TIC firm and sits in the rung between them and the Big 4 — which narrows the gap we assumed was open.","INF",[]],
+ ["ratio2","mk11","c","","published","Published proof that the labour captures 12–37x what the network captures. A platform defending a software multiple cannot price the labour honestly; that is the sentence it cannot write.","A",["enxp2"]],
+ ["ratio2","o6","c","","published","Hard numbers under sell-the-labour-openly — no longer only a TRIZ inference.","A",["enxp2"]],
+ ["ratio2","W6","c","","published","Gives W6 a priceable floor: comparable labour spend is €5–15k per SME against an Indian retainer floor near ₹2 lakh.","A",["enxp2"]],
+ ["ratio2","W11","c","","published","If the network fee is €405 and the labour is €5–15k, absorbing the small fee to win the large engagement is arithmetically cheap.","INF",["enxp2"]], ["mk2","rb1","c","","evidenced","The comparison-page axis (size, support) is where a specific, sourced weakness like this actually gets used - naming it beats a generic size claim.","INF",[]],
+ ["rb1","mk3","c","","evidenced","A named, sourced reliability and billing complaint is a stronger comparison-page attack than an unsourced size claim - it fills the axis mk3 already identifies as unoccupied.","INF",[]],
+ ["m10","rb2","c","","evidenced","The junior-rung hollowing (m10) is the structural cause; the customer-success gap (rb2) is independent, client-sourced evidence that the same firms' actual client experience is already weaker than peers, not just a cost-structure prediction.","INF",[]],
+ ["rb2","o6","c","","evidenced","A documented customer-success gap at the leading capability provider strengthens the case for selling labour and relationship quality openly - competitors' own client references now support it independently.","B",["verd"]],
+ ["w5","rb2","w","","2026","Independence rules pushing the Big 4 toward assurance make the customer-success gap harder to close from their side - assurance work depersonalises the relationship further, not less.","INF",[]],
+
+ ["tic1","mk3","w","","now","Bureau Veritas already delivering this in India weakens the claim that the position is open.","A",["bv"]],
+ ["synth","o2","c","","structural","The synthesis names what o2 already proposes — Intermediary — as one instance of the wider Taking Away move.","INF",[]],
+ ["synth","o6","c","","structural","Same synthesis, other instance: sell the labour is Taking Away applied to pricing.","INF",[]],
+ ["ratio2","synth","c","","published","ENX's published tariff is the real-world proof the synthesis already exists and works.","A",["enxp2"]]
+];
+const LOOP={A:["m1","m2","m3"],B:["s1","s2","s3"],C:["mk8","mk10"],D:["r5","m8","s6","s7"],E:["mk6","mk7","lp1"]};
+const EC={c:"#8B8B8B",r:"#D34B4B",b:"#2EB28F",w:"#2F8FB0"};
+const W=200,H=62,ns="http://www.w3.org/2000/svg",svg=document.getElementById("map");
+const by=Object.fromEntries(N.map(n=>[n[0],n]));
+const el=(t,a)=>{const e=document.createElementNS(ns,t);for(const k in a)e.setAttribute(k,a[k]);return e};
+const defs=el("defs",{});
+for(const k in EC){const m=el("marker",{id:"a"+k,viewBox:"0 0 10 10",refX:"9",refY:"5",markerWidth:"7",markerHeight:"7",orient:"auto-start-reverse"});m.appendChild(el("path",{d:"M0,0 L10,5 L0,10 z",fill:EC[k]}));defs.appendChild(m)}
+svg.appendChild(defs);
+function exit(cx,cy,tx,ty){const dx=tx-cx,dy=ty-cy;const s=Math.min((W/2+3)/Math.abs(dx||1e-6),(H/2+3)/Math.abs(dy||1e-6));return[cx+dx*s,cy+dy*s]}
+const gB=el("g",{}),gE=el("g",{}),gT=el("g",{}),gL=el("g",{}),gN=el("g",{});svg.append(gB,gE,gT,gL,gN);
+[[30,"Band 1 — why the numbers are wrong"],[652,"Band 2 — why a supplier still cannot answer once"],[1232,"Band 3 — why the go-to-market does not land"],[1614,"Band 4 — twelve entry wedges, each wired to the loop it attacks"],[1932,"TRIZ — one move, found from two directions, already proven at scale"]].forEach(([y,t])=>{
+  const e=el("text",{x:16,y:y,fill:"#5C5C5C","font-size":"13.5","font-weight":"700"});e.textContent=t;gB.appendChild(e)});
+[620,1200,1602,1912].forEach(y=>gB.appendChild(el("line",{x1:16,y1:y,x2:1264,y2:y,stroke:"#D6D6D6","stroke-dasharray":"4 5"})));
+const edgeEls=[],lagEls=[];
+E.forEach(([f,t,k,loop,lag])=>{
+  const a=by[f],b=by[t];if(!a||!b)return;
+  const mx=(a[2]+b[2])/2,my=(a[3]+b[3])/2;
+  const dx=b[2]-a[2],dy=b[3]-a[3],len=Math.hypot(dx,dy)||1;
+  const bend=k==="r"?48:(E.some(e=>e[0]===t&&e[1]===f)?26:11);
+  const qx=mx-dy/len*bend,qy=my+dx/len*bend;
+  const[p1x,p1y]=exit(a[2],a[3],qx,qy),[p2x,p2y]=exit(b[2],b[3],qx,qy);
+  const p=el("path",{d:`M${p1x},${p1y} Q${qx},${qy} ${p2x},${p2y}`,class:"edge",stroke:EC[k],"marker-end":`url(#a${k})`});
+  if(k==="r")p.setAttribute("stroke-width","2.7");
+  if(k==="b")p.setAttribute("stroke-dasharray","6 5");
+  if(k==="w")p.setAttribute("stroke-dasharray","2 4");
+  p.dataset.f=f;p.dataset.t=t;p.dataset.i=edgeEls.length;if(loop)p.dataset.loop=loop;gE.appendChild(p);edgeEls.push(p);
+  if(loop){const g=el("g",{class:"looptag"});const lx=.25*p1x+.5*qx+.25*p2x,ly=.25*p1y+.5*qy+.25*p2y;
+    g.appendChild(el("rect",{x:lx-26,y:ly-10,width:52,height:20,rx:10}));
+    const tx=el("text",{x:lx,y:ly+4,"text-anchor":"middle"});tx.textContent="Loop "+loop;g.appendChild(tx);g.dataset.loop=loop;gT.appendChild(g)}
+  if(lag){const g=el("g",{class:"lag"});const lx=.25*p1x+.5*qx+.25*p2x,ly=.25*p1y+.5*qy+.25*p2y;
+    const w=lag.length*5.6+14;
+    g.appendChild(el("rect",{x:lx-w/2,y:ly-9,width:w,height:18,rx:4}));
+    const tx=el("text",{x:lx,y:ly+4,"text-anchor":"middle"});tx.textContent=lag;g.appendChild(tx);
+    g.dataset.f=f;g.dataset.t=t;g.style.display="none";gL.appendChild(g);lagEls.push(g)}
+});
+const nodeEls={};
+N.forEach(n=>{
+  const[id,type,x,y,lines,,prov]=n,[stroke,fill,label]=C[type],[pfg,pbg]=PC[prov];
+  const g=el("g",{class:"node",tabindex:"0",role:"button","aria-label":label+", "+(prov==="INF"?"my inference":"source grade "+prov)+": "+lines.join(" ")});
+  const r=el("rect",{x:x-W/2,y:y-H/2,width:W,height:H,rx:9,fill:fill,stroke:stroke});
+  if(prov==="INF")r.setAttribute("class","inf");
+  g.appendChild(r);
+  const k=el("text",{x:x-W/2+9,y:y-H/2+14,class:"kind",fill:stroke});k.textContent=label.toUpperCase();g.appendChild(k);
+  const pw=prov==="INF"?34:(prov==="INT"?26:14);
+  g.appendChild(el("rect",{x:x+W/2-pw-8,y:y-H/2+5,width:pw,height:13,rx:3,fill:pbg,stroke:pfg,"stroke-width":.9}));
+  const pt=el("text",{x:x+W/2-8-pw/2,y:y-H/2+15,class:"pv",fill:pfg,"text-anchor":"middle"});pt.textContent=prov;g.appendChild(pt);
+  lines.forEach((l,i)=>{const t=el("text",{x:x-W/2+9,y:y-H/2+31+i*14});t.textContent=l;g.appendChild(t)});
+  g.dataset.id=id;g.dataset.prov=prov;gN.appendChild(g);nodeEls[id]=g;
+  g.addEventListener("click",()=>select(id));
+  g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();select(id)}});
+});
+const HOPC=["","","h2","h3","h4"];
+function clearFx(){
+  Object.values(nodeEls).forEach(g=>g.classList.remove("dim","h2","h3","h4"));
+  edgeEls.forEach(p=>p.classList.remove("dim","hot","h2","h3"));
+  gT.querySelectorAll("g").forEach(g=>g.classList.remove("dim"));
+  lagEls.forEach(g=>g.style.display="none");
+}
+function reset(){clearFx()}
+function focusSet(ids,pred){
+  clearFx();
+  Object.entries(nodeEls).forEach(([k,g])=>g.classList.toggle("dim",!ids.has(k)));
+  edgeEls.forEach(p=>{const on=pred(p);p.classList.toggle("dim",!on);p.classList.toggle("hot",on)});
+  gT.querySelectorAll("g").forEach(g=>g.classList.toggle("dim",!edgeEls.some(p=>p.dataset.loop===g.dataset.loop&&pred(p))));
+}
+// Walk the whole chain, not one hop. Visited set terminates the loops.
+function reach(id,dir){
+  const seen=new Map([[id,0]]), eset=new Map();
+  let frontier=[id],hop=0;
+  while(frontier.length&&hop<14){
+    hop++;const next=[];
+    for(const f of frontier) E.forEach((e,i)=>{
+      const a=dir==="out"?e[0]:e[1], b=dir==="out"?e[1]:e[0];
+      if(a!==f) return;
+      if(!eset.has(i)) eset.set(i,hop);
+      if(!seen.has(b)){seen.set(b,hop);next.push(b)}
+    });
+    frontier=next;
+  }
+  return {seen,eset};
+}
+let oneHop=false;
+function edgeBetween(a,b){return E.find(e=>e[0]===a&&e[1]===b)}
+function chipFor(pv){return `<span class="chip ${pv}">${pv}</span>`}
+function hopList(seen,title,id,dir){
+  const byHop={};
+  for(const [k,h] of seen) if(h>0)(byHop[h]=byHop[h]||[]).push(k);
+  const hops=Object.keys(byHop).map(Number).sort((a,b)=>a-b);
+  if(!hops.length) return "";
+  let html=`<div class="hopgrp"><div class="k" style="color:var(--muted)">${title}</div>`;
+  for(const h of hops){
+    html+=`<div class="hl">${h===1?"Directly — with the mechanism":"Step "+h}</div><ul>`;
+    html+=byHop[h].map(k=>{
+      const o=by[k];if(!o)return"";
+      const name=`${o[4].join(" ")}${o[6]==="INF"?" "+chipFor("INF"):""}`;
+      if(h!==1) return `<li>${name}</li>`;
+      const e = dir==="out" ? edgeBetween(id,k) : edgeBetween(k,id);
+      if(!e) return `<li>${name}</li>`;
+      const lag = e[4]?`<span class="lagtxt">${e[4]}</span>`:"";
+      return `<li>${name}<div class="mech">${chipFor(e[6])} ${mark(e[5])} ${lag}${e[7]&&e[7].length?`<div class="elinks">${srcLinks(e[7])}</div>`:""}</div></li>`;
+    }).join("");
+    html+=`</ul>`;
+  }
+  return html+"</div>";
+}
+function select(id){
+  const n=by[id],[stroke,,label]=C[n[1]],prov=n[6];
+  const dn=reach(id,"out"), up=reach(id,"in");
+  if(oneHop){
+    const ins=E.filter(e=>e[1]===id),outs=E.filter(e=>e[0]===id);
+    focusSet(new Set([id,...ins.map(e=>e[0]),...outs.map(e=>e[1])]),p=>p.dataset.f===id||p.dataset.t===id);
+  }else{
+    clearFx();
+    const all=new Map([...up.seen,...dn.seen]);
+    Object.entries(nodeEls).forEach(([k,g])=>{
+      if(!all.has(k)){g.classList.add("dim");return}
+      const c=HOPC[Math.min(all.get(k),4)];if(c)g.classList.add(c);
+    });
+    const eh=new Map([...up.eset,...dn.eset]);
+    edgeEls.forEach(p=>{
+      const i=+p.dataset.i;
+      if(!eh.has(i)){p.classList.add("dim");return}
+      const h=eh.get(i);p.classList.add(h===1?"hot":(h===2?"h2":"h3"));
+    });
+    gT.querySelectorAll("g").forEach(g=>g.classList.toggle("dim",!edgeEls.some(p=>p.dataset.loop===g.dataset.loop&&eh.has(+p.dataset.i))));
+  }
+  lagEls.forEach(g=>{
+    const on = oneHop ? (g.dataset.f===id||g.dataset.t===id)
+      : (dn.seen.has(g.dataset.f)&&dn.seen.has(g.dataset.t))||(up.seen.has(g.dataset.f)&&up.seen.has(g.dataset.t));
+    g.style.display=on?"":"none";
+  });
+  const dk=document.getElementById("dk");dk.textContent=label;dk.style.color=stroke;
+  document.getElementById("dt").textContent=n[4].join(" ");
+  document.getElementById("db").innerHTML=mark(n[5]);
+  const rq=REG[id];
+  const regHtml=rq?`<div class="reg"><b>OPEN REGISTER QUESTIONS</b>${rq.map(q=>`<span>${q}</span>`).join("")}<div style="margin-top:4px;color:var(--muted);font-size:12px">These are the unanswered questions in the research space that this node depends on.</div></div>`:"";
+  const box=document.getElementById("dprov");
+  if(prov==="INF"){
+    const from=(n[8]||[]).map(x=>by[x]?by[x][4].join(" "):x).join(" · ");
+    box.innerHTML=regHtml+`<div class="pbox inf"><b>MY INFERENCE — NOT SOURCED</b>This is my own reasoning. It carries no external authority; judge it yourself.${from?`<br><span style="color:var(--muted)">Derived from: ${from}</span>`:""}</div>`;
+  }else{
+    const weak=(prov==="D"||prov==="C");
+    const links=(n[7]||[]).map(k=>{const s=S[k];return s&&s[1]?`<a href="${s[1]}" target="_blank" rel="noopener">${s[0]}</a>`:`<span style="color:var(--muted);font-size:12.5px">${s?s[0]:k}</span>`}).join("");
+    box.innerHTML=regHtml+`<div class="pbox ${weak?"weak":"src"}"><b>SOURCED — GRADE ${prov}${weak?", TREAT WITH CAUTION":""}</b>${links}</div>`;
+  }
+  const nd=dn.seen.size-1, nu=up.seen.size-1;
+  document.getElementById("ct").innerHTML=`${n[4].join(" ")}<br><span style="font-weight:400;font-size:12.5px;color:var(--muted)">Cascades to ${nd} node${nd===1?"":"s"} · traces back to ${nu}</span>`;
+  document.getElementById("cin").innerHTML=hopList(up.seen,"Traces back to",id,"in");
+  document.getElementById("cout").innerHTML=hopList(dn.seen,"Cascades forward to",id,"out");
+  document.querySelectorAll(".tools button").forEach(b=>b.setAttribute("aria-pressed","false"));
+}
+let lastSel=null;
+const _sel=select; select=function(id){lastSel=id;_sel(id)};
+document.querySelectorAll(".tools button").forEach(b=>b.addEventListener("click",()=>{
+  if(b.dataset.mode==="hop"){
+    oneHop=!oneHop;
+    b.textContent=oneHop?"Showing: one step only":"Showing: full cascade";
+    b.setAttribute("aria-pressed",oneHop?"true":"false");
+    if(lastSel)select(lastSel);
+    return;
+  }
+  document.querySelectorAll(".tools button:not(#hopbtn)").forEach(x=>x.setAttribute("aria-pressed","false"));
+  if(b.dataset.mode==="wedge"){
+    b.setAttribute("aria-pressed","true");clearFx();
+    const W=new Set(N.filter(n=>/^W\d+$/.test(n[0])).map(n=>n[0]));
+    const keep=new Set(W);
+    E.forEach(e=>{if(W.has(e[0]))keep.add(e[1]);if(W.has(e[1]))keep.add(e[0])});
+    Object.entries(nodeEls).forEach(([k,g])=>g.classList.toggle("dim",!keep.has(k)));
+    edgeEls.forEach(p=>{const on=W.has(p.dataset.f)||W.has(p.dataset.t);p.classList.toggle("dim",!on);p.classList.toggle("hot",on)});
+    return;
+  }
+  if(b.dataset.mode==="sourced"){
+    b.setAttribute("aria-pressed","true");reset();
+    Object.entries(nodeEls).forEach(([k,g])=>g.classList.toggle("dim",g.dataset.prov==="INF"));
+    edgeEls.forEach(p=>p.classList.toggle("dim",by[p.dataset.f][6]==="INF"||by[p.dataset.t][6]==="INF"));
+    return;
+  }
+  const L=b.dataset.loop;if(!L){reset();return}
+  b.setAttribute("aria-pressed","true");
+  focusSet(new Set(LOOP[L]),p=>LOOP[L].includes(p.dataset.f)&&LOOP[L].includes(p.dataset.t));
+}));
+</script>
+</body>
+</html>
